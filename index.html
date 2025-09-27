@@ -1,1 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>PNG to WebP: Pro Converter</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <!-- TailwindCSS CDN for styling -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- JSZip for ZIP functionality -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+</head>
+<body class="bg-gradient-to-br from-blue-50 via-white to-green-50 min-h-screen flex flex-col items-center justify-center">
+
+  <div class="bg-white p-8 rounded-2xl shadow-xl max-w-lg w-full">
+    <h1 class="text-3xl font-extrabold text-blue-600 mb-2 text-center">PNG to WebP Converter</h1>
+    <p class="mb-6 text-gray-500 text-center">Convert multiple PNGs to WebP. Drag-n-drop or browse, preview images, download individually or as ZIP.</p>
+
+    <!-- File Upload Section -->
+    <div id="dropZone" class="w-full border-2 border-dashed border-blue-400 rounded-lg p-6 mb-4 flex flex-col items-center justify-center cursor-pointer transition hover:border-blue-600 focus:border-blue-600 bg-gray-50">
+      <span class="text-lg font-medium text-blue-700 mb-2">Drop files here or click to select PNG images</span>
+      <input type="file" id="pngInput" accept="image/png" multiple class="hidden" />
+      <span class="text-xs text-gray-400">PNG files only. No max file size limit.</span>
+    </div>
+
+    <!-- Previews Section -->
+    <div id="previewSection" class="mb-4"></div>
+
+    <!-- Status & Control Buttons -->
+    <div class="flex flex-row gap-2 justify-center mb-4">
+      <button id="convertBtn" class="bg-blue-500 text-white px-4 py-2 rounded-lg shadow hover:bg-blue-700 transition disabled:opacity-50 flex items-center" disabled>
+        <svg id="spinner" class="hidden mr-2 animate-spin text-white w-5 h-5" fill="none" viewBox="0 0 24 24">
+          <circle class="opacity-20" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/>
+          <path class="opacity-80" fill="currentColor" d="M4 12a8 8 0 018-8v8z"/>
+        </svg>
+        <span id="convertBtnLabel">Convert to WebP</span>
+      </button>
+      <button id="downloadAllBtn" style="display:none;" class="bg-green-500 text-white px-4 py-2 rounded-lg shadow hover:bg-green-700 transition">
+        <span>Download All (.zip)</span>
+      </button>
+    </div>
+    <div id="statusMsg" class="text-sm text-gray-500 mb-2 text-center"></div>
+
+    <!-- Download Links Section -->
+    <div id="downloadLinks" class="flex flex-col gap-2"></div>
+  </div>
+
+<script>
+const dropZone = document.getElementById("dropZone");
+const fileInput = document.getElementById("pngInput");
+const previewSection = document.getElementById("previewSection");
+const convertBtn = document.getElementById("convertBtn");
+const convertBtnLabel = document.getElementById("convertBtnLabel");
+const spinner = document.getElementById("spinner");
+const downloadLinks = document.getElementById("downloadLinks");
+const downloadAllBtn = document.getElementById("downloadAllBtn");
+const statusMsg = document.getElementById("statusMsg");
+
+let selectedFiles = [];
+let convertedBlobs = [];
+let convertedNames = [];
+
+// Utility: format bytes to KB/MB
+function formatSize(size) {
+  if (size < 1024) return `${size} bytes`;
+  if (size < 1024 * 1024) return `${(size / 1024).toFixed(1)} KB`;
+  return `${(size / 1024 / 1024).toFixed(2)} MB`;
+}
+
+// UI: Render file previews
+function renderPreviews() {
+  previewSection.innerHTML = "";
+  if (selectedFiles.length === 0) {
+    previewSection.innerHTML = "<div class='text-gray-400 text-center mb-2'>No images selected.</div>";
+    convertBtn.disabled = true;
+    return;
+  }
+  convertBtn.disabled = false;
+  selectedFiles.forEach((file, idx) => {
+    const previewContainer = document.createElement("div");
+    previewContainer.className = "flex items-center gap-3 mb-2 rounded-lg bg-gray-100 p-2 shadow";
+
+    const img = document.createElement("img");
+    img.className = "w-10 h-10 rounded border border-gray-300 object-cover";
+    img.src = URL.createObjectURL(file);
+
+    const details = document.createElement("div");
+    details.className = "flex flex-col flex-1";
+    details.innerHTML = `<span class="font-bold text-gray-800 text-sm">${file.name}</span>
+      <span class="text-xs text-gray-500">${formatSize(file.size)}</span>`;
+
+    const removeBtn = document.createElement("button");
+    removeBtn.className = "bg-red-100 text-red-600 rounded px-2 py-1 text-xs font-bold hover:bg-red-200 mr-1";
+    removeBtn.innerText = "Remove";
+    removeBtn.onclick = () => {
+      selectedFiles.splice(idx, 1);
+      renderPreviews();
+      downloadLinks.innerHTML = '';
+      downloadAllBtn.style.display = 'none';
+      statusMsg.textContent = '';
+    };
+
+    previewContainer.appendChild(img);
+    previewContainer.appendChild(details);
+    previewContainer.appendChild(removeBtn);
+    previewSection.appendChild(previewContainer);
+  });
+}
+
+// Handle drop & click
+dropZone.onclick = () => fileInput.click();
+dropZone.addEventListener("dragover", e => {
+  e.preventDefault();
+  e.stopPropagation();
+  dropZone.classList.add("border-blue-700", "bg-blue-50");
+});
+dropZone.addEventListener("dragleave", e => {
+  e.preventDefault();
+  e.stopPropagation();
+  dropZone.classList.remove("border-blue-700", "bg-blue-50");
+});
+dropZone.addEventListener("drop", e => {
+  e.preventDefault();
+  e.stopPropagation();
+  dropZone.classList.remove("border-blue-700", "bg-blue-50");
+  handleFiles(e.dataTransfer.files);
+});
+fileInput.onchange = () => handleFiles(fileInput.files);
+
+function handleFiles(filesList) {
+  // Accept only PNG (no max size/count check)
+  const filesArr = Array.from(filesList).filter(f => f.type === "image/png");
+  for (let f of filesArr) {
+    selectedFiles.push(f);
+  }
+  statusMsg.textContent = "";
+  renderPreviews();
+}
+
+// Conversion logic
+function convertImageToWebP(file) {
+  return new Promise((resolve, reject) => {
+    const img = new window.Image();
+    img.onload = function () {
+      const canvas = document.createElement('canvas');
+      canvas.width = img.width;
+      canvas.height = img.height;
+      const ctx = canvas.getContext('2d');
+      ctx.drawImage(img, 0, 0);
+      canvas.toBlob(function(blob) {
+        const filename = file.name.replace(/\.png$/i, '.webp');
+        resolve({blob, filename});
+      }, 'image/webp');
+    };
+    img.onerror = () => reject(`Error loading ${file.name}`);
+    img.src = URL.createObjectURL(file);
+  });
+}
+
+// Convert Button
+convertBtn.onclick = async function () {
+  if (!selectedFiles.length) return;
+
+  convertedBlobs = [];
+  convertedNames = [];
+  downloadLinks.innerHTML = "";
+  downloadAllBtn.style.display = "none";
+  statusMsg.textContent = "";
+
+  convertBtn.disabled = true;
+  spinner.classList.remove("hidden");
+  convertBtnLabel.textContent = "Converting...";
+
+  try {
+    let total = selectedFiles.length;
+    let done = 0;
+    statusMsg.textContent = `Converting ${total} images...`;
+    for (let file of selectedFiles) {
+      let { blob, filename } = await convertImageToWebP(file);
+      convertedBlobs.push(blob);
+      convertedNames.push(filename);
+
+      // Individual download UI
+      const url = URL.createObjectURL(blob);
+      const linkItem = document.createElement("div");
+      linkItem.className = "flex items-center gap-2 bg-green-50 rounded px-3 py-1 shadow";
+      const fileIcon = `<svg class="w-5 h-5 text-green-500"
+        fill="none" viewBox="0 0 24 24"><path d="M4 12l6 6L20 6" stroke="currentColor"
+        stroke-width="2" stroke-linecap="round"
+        stroke-linejoin="round"/></svg>`;
+
+      linkItem.innerHTML = `${fileIcon} <a href="${url}" download="${filename}" class="text-blue-700 font-semibold hover:underline text-sm flex-1">Download ${filename}</a>`;
+      downloadLinks.appendChild(linkItem);
+
+      done++;
+      statusMsg.textContent = `Converted ${done} of ${total}`;
+    }
+    if (convertedBlobs.length > 0) {
+      downloadAllBtn.style.display = "block";
+      statusMsg.textContent = "All conversions complete!";
+    }
+  } catch (err) {
+    statusMsg.textContent = typeof err === 'string' ? err : 'An error occurred during conversion.';
+  } finally {
+    convertBtn.disabled = false;
+    spinner.classList.add("hidden");
+    convertBtnLabel.textContent = "Convert to WebP";
+  }
+};
+
+// Download All (.zip)
+downloadAllBtn.onclick = function () {
+  if (!convertedBlobs.length) return;
+  statusMsg.textContent = "Creating ZIP file...";
+  const zip = new window.JSZip();
+  for (let i = 0; i < convertedBlobs.length; i++) {
+    zip.file(convertedNames[i], convertedBlobs[i]);
+  }
+  zip.generateAsync({type: 'blob'})
+    .then(function(content) {
+      const url = URL.createObjectURL(content);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = 'converted_images.zip';
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      statusMsg.textContent = "ZIP download started!";
+    })
+    .catch(() => {
+      statusMsg.textContent = "Failed to create ZIP file.";
+    });
+};
+</script>
+</body>
+</html>
 
