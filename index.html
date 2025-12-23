@@ -10,21 +10,17 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
 </head>
 <body class="bg-gradient-to-br from-blue-50 via-white to-green-50 min-h-screen flex flex-col items-center justify-center">
-
   <div class="bg-white p-8 rounded-2xl shadow-xl max-w-lg w-full">
     <h1 class="text-3xl font-extrabold text-blue-600 mb-2 text-center">Image to WebP Converter</h1>
-    <p class="mb-6 text-gray-500 text-center">Convert PNG or JPG images to WebP. Drag-n-drop or browse, preview images, download individually or as ZIP.</p>
-
+    <p class="mb-6 text-gray-500 text-center">Convert PNG, JPG, or SVG images to WebP. Drag-n-drop or browse, preview images, download individually or as ZIP.</p>
     <!-- File Upload Section -->
     <div id="dropZone" class="w-full border-2 border-dashed border-blue-400 rounded-lg p-6 mb-4 flex flex-col items-center justify-center cursor-pointer transition hover:border-blue-600 focus:border-blue-600 bg-gray-50">
-      <span class="text-lg font-medium text-blue-700 mb-2">Drop files here or click to select PNG/JPG images</span>
-      <input type="file" id="imgInput" accept="image/png, image/jpeg" multiple class="hidden" />
-      <span class="text-xs text-gray-400">PNG and JPG files only. No max file size limit.</span>
+      <span class="text-lg font-medium text-blue-700 mb-2">Drop files here or click to select PNG/JPG/SVG images</span>
+      <input type="file" id="imgInput" accept="image/png,image/jpeg,image/svg+xml" multiple class="hidden" />
+      <span class="text-xs text-gray-400">PNG, JPG/JPEG, and SVG files only. No max file size limit.</span>
     </div>
-
     <!-- Previews Section -->
     <div id="previewSection" class="mb-4"></div>
-
     <!-- Status & Control Buttons -->
     <div class="flex flex-row gap-2 justify-center mb-4">
       <button id="convertBtn" class="bg-blue-500 text-white px-4 py-2 rounded-lg shadow hover:bg-blue-700 transition disabled:opacity-50 flex items-center" disabled>
@@ -39,7 +35,6 @@
       </button>
     </div>
     <div id="statusMsg" class="text-sm text-gray-500 mb-2 text-center"></div>
-
     <!-- Download Links Section -->
     <div id="downloadLinks" class="flex flex-col gap-2"></div>
   </div>
@@ -79,9 +74,15 @@ function renderPreviews() {
     const previewContainer = document.createElement("div");
     previewContainer.className = "flex items-center gap-3 mb-2 rounded-lg bg-gray-100 p-2 shadow";
 
-    const img = document.createElement("img");
-    img.className = "w-10 h-10 rounded border border-gray-300 object-cover";
-    img.src = URL.createObjectURL(file);
+    // Preview thumbnail
+    const preview = document.createElement(file.type === "image/svg+xml" ? "object" : "img");
+    preview.className = "w-10 h-10 rounded border border-gray-300 object-cover bg-white";
+    if (file.type === "image/svg+xml") {
+      preview.data = URL.createObjectURL(file);
+      preview.type = "image/svg+xml";
+    } else {
+      preview.src = URL.createObjectURL(file);
+    }
 
     const details = document.createElement("div");
     details.className = "flex flex-col flex-1";
@@ -99,7 +100,7 @@ function renderPreviews() {
       statusMsg.textContent = '';
     };
 
-    previewContainer.appendChild(img);
+    previewContainer.appendChild(preview);
     previewContainer.appendChild(details);
     previewContainer.appendChild(removeBtn);
     previewSection.appendChild(previewContainer);
@@ -127,10 +128,8 @@ dropZone.addEventListener("drop", e => {
 fileInput.onchange = () => handleFiles(fileInput.files);
 
 function handleFiles(filesList) {
-  // Accept only PNG or JPG/JPEG
-  const filesArr = Array.from(filesList).filter(f =>
-    f.type === "image/png" || f.type === "image/jpeg"
-  );
+  const validTypes = ["image/png", "image/jpeg", "image/svg+xml"];
+  const filesArr = Array.from(filesList).filter(f => validTypes.includes(f.type));
   for (let f of filesArr) {
     selectedFiles.push(f);
   }
@@ -138,7 +137,7 @@ function handleFiles(filesList) {
   renderPreviews();
 }
 
-// Conversion logic
+// Conversion logic – works for PNG, JPG, and SVG
 function convertImageToWebP(file) {
   return new Promise((resolve, reject) => {
     const img = new window.Image();
@@ -148,12 +147,13 @@ function convertImageToWebP(file) {
       canvas.height = img.height;
       const ctx = canvas.getContext('2d');
       ctx.drawImage(img, 0, 0);
-      canvas.toBlob(function(blob) {
-        const filename = file.name.replace(/\.(png|jpg|jpeg)$/i, '.webp');
+      canvas.toBlob(blob => {
+        const filename = file.name.replace(/\.(png|jpg|jpeg|svg)$/i, '.webp');
         resolve({blob, filename});
-      }, 'image/webp');
+      }, 'image/webp', 0.9); // quality 0.9 for good balance
     };
     img.onerror = () => reject(`Error loading ${file.name}`);
+    // For SVG, we need to use object URL; for others, it works the same
     img.src = URL.createObjectURL(file);
   });
 }
@@ -161,13 +161,11 @@ function convertImageToWebP(file) {
 // Convert Button
 convertBtn.onclick = async function () {
   if (!selectedFiles.length) return;
-
   convertedBlobs = [];
   convertedNames = [];
   downloadLinks.innerHTML = "";
   downloadAllBtn.style.display = "none";
   statusMsg.textContent = "";
-
   convertBtn.disabled = true;
   spinner.classList.remove("hidden");
   convertBtnLabel.textContent = "Converting...";
@@ -181,15 +179,11 @@ convertBtn.onclick = async function () {
       convertedBlobs.push(blob);
       convertedNames.push(filename);
 
-      // Individual download UI
+      // Individual download link
       const url = URL.createObjectURL(blob);
       const linkItem = document.createElement("div");
       linkItem.className = "flex items-center gap-2 bg-green-50 rounded px-3 py-1 shadow";
-      const fileIcon = `<svg class="w-5 h-5 text-green-500"
-        fill="none" viewBox="0 0 24 24"><path d="M4 12l6 6L20 6" stroke="currentColor"
-        stroke-width="2" stroke-linecap="round"
-        stroke-linejoin="round"/></svg>`;
-
+      const fileIcon = `<svg class="w-5 h-5 text-green-500" fill="none" viewBox="0 0 24 24"><path d="M4 12l6 6L20 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
       linkItem.innerHTML = `${fileIcon} <a href="${url}" download="${filename}" class="text-blue-700 font-semibold hover:underline text-sm flex-1">Download ${filename}</a>`;
       downloadLinks.appendChild(linkItem);
 
