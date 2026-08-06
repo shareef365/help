@@ -972,7 +972,941 @@
                 transition-duration: 0.01ms !important;
             }
         }
+    
+        /* ===================== DARK MODE ===================== */
+        :root[data-theme="dark"] {
+            --primary: #6366f1;
+            --primary-light: #818cf8;
+            --primary-dark: #4f46e5;
+            --primary-soft: #1e1b3a;
+            --success: #10b981;
+            --success-light: #064e3b;
+            --success-dark: #6ee7b7;
+            --error: #f87171;
+            --warning: #fbbf24;
+            --background: #0b1020;
+            --surface: #141a2e;
+            --surface-alt: #1a2138;
+            --text-primary: #e8ebf5;
+            --text-secondary: #a4adc7;
+            --text-tertiary: #6b7390;
+            --border: #283150;
+            --border-light: #1f2640;
+            --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.3);
+            --shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.4), 0 1px 2px 0 rgba(0, 0, 0, 0.3);
+            --shadow-md: 0 6px 16px -4px rgba(0, 0, 0, 0.5), 0 2px 6px -2px rgba(0, 0, 0, 0.4);
+            --shadow-lg: 0 20px 40px -12px rgba(0, 0, 0, 0.6), 0 8px 16px -8px rgba(0, 0, 0, 0.5);
+            --physics: #38bdf8;
+            --chemistry: #a78bfa;
+            --biology: #34d399;
+        }
+        :root[data-theme="dark"] .option-item { background: var(--surface-alt); }
+        :root[data-theme="dark"] .option-item.correct { background: linear-gradient(135deg, #064e3b, #052e1f); }
+        :root[data-theme="dark"] .correct-answer { background: linear-gradient(135deg, #1e3a8a, #172554); }
+        :root[data-theme="dark"] .explanation { background: linear-gradient(135deg, #064e3b, #052e1f); }
+        :root[data-theme="dark"] .syntax-guide { background: var(--surface-alt); }
+        :root[data-theme="dark"] .code-editor { background: var(--surface); color: var(--text-primary); }
+        :root[data-theme="dark"] .subject-header { background: linear-gradient(90deg, var(--surface), var(--surface-alt)); }
+        :root[data-theme="dark"] .image-loading { background: linear-gradient(90deg, var(--surface-alt) 25%, var(--surface) 50%, var(--surface-alt) 75%); background-size: 200% 100%; }
+
+        /* ===================== FLAG BUTTON ===================== */
+        .question-actions {
+            display: flex;
+            align-items: center;
+            gap: 0.35rem;
+            margin-left: auto;
+            flex-shrink: 0;
+        }
+        .q-action-btn {
+            background: var(--surface-alt);
+            border: 1px solid var(--border);
+            color: var(--text-secondary);
+            width: 32px;
+            height: 32px;
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.85rem;
+            transition: all 0.15s ease;
+            padding: 0;
+        }
+        .q-action-btn:hover {
+            background: var(--surface);
+            border-color: var(--primary-light);
+            color: var(--primary);
+            transform: translateY(-1px);
+        }
+        .q-action-btn.flag-btn.flagged {
+            background: var(--error);
+            border-color: var(--error);
+            color: white;
+            box-shadow: 0 2px 8px -2px rgba(239, 68, 68, 0.5);
+        }
+        .q-action-btn.flag-btn.flagged:hover { background: #dc2626; color: white; }
+        .q-action-btn.note-btn.has-notes {
+            background: var(--warning);
+            border-color: var(--warning);
+            color: white;
+        }
+        .q-action-btn.note-btn.has-notes:hover { background: #d97706; color: white; }
+
+        .question-card.flagged {
+            border-color: var(--error);
+            background: linear-gradient(180deg, #fff5f5 0%, var(--surface) 60px);
+            box-shadow: 0 0 0 1px rgba(239, 68, 68, 0.15), var(--shadow-sm);
+        }
+        :root[data-theme="dark"] .question-card.flagged {
+            background: linear-gradient(180deg, rgba(127, 29, 29, 0.25) 0%, var(--surface) 60px);
+        }
+
+        /* ===================== NOTES POPUP ===================== */
+        .notes-popup {
+            margin-top: 0.75rem;
+            padding: 0.75rem;
+            background: var(--surface-alt);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            display: none;
+        }
+        .notes-popup.open { display: block; }
+        .notes-popup textarea {
+            width: 100%;
+            min-height: 80px;
+            padding: 0.5rem 0.65rem;
+            border: 1px solid var(--border);
+            border-radius: var(--radius-sm);
+            font-family: 'Inter', sans-serif;
+            font-size: 0.85rem;
+            background: var(--surface);
+            color: var(--text-primary);
+            resize: vertical;
+            line-height: 1.5;
+        }
+        .notes-popup textarea:focus {
+            outline: none;
+            border-color: var(--primary-light);
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.12);
+        }
+        .notes-popup .notes-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.4rem;
+            font-size: 0.75rem;
+            color: var(--text-tertiary);
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+        }
+        .notes-popup .notes-clear {
+            background: none;
+            border: none;
+            color: var(--text-tertiary);
+            cursor: pointer;
+            font-size: 0.72rem;
+            font-family: inherit;
+            padding: 0;
+        }
+        .notes-popup .notes-clear:hover { color: var(--error); }
+
+        /* ===================== CARD COLLAPSE ===================== */
+        .question-card.collapsed .question-text,
+        .question-card.collapsed .question-image-container,
+        .question-card.collapsed .options-container,
+        .question-card.collapsed .correct-answer,
+        .question-card.collapsed .explanation,
+        .question-card.collapsed .notes-popup {
+            display: none;
+        }
+        .question-card.collapsed {
+            padding: 0.7rem 1.1rem;
+        }
+        .question-card.collapsed .question-header {
+            margin-bottom: 0;
+            padding-bottom: 0;
+            border-bottom: 0;
+        }
+        .q-action-btn.collapse-btn .fa-chevron-up { display: none; }
+        .question-card.collapsed .q-action-btn.collapse-btn .fa-chevron-up { display: inline; }
+        .question-card.collapsed .q-action-btn.collapse-btn .fa-chevron-down { display: none; }
+
+        /* ===================== PROGRESS BAR ===================== */
+        .progress-bar {
+            display: flex;
+            gap: 0.5rem;
+            padding: 0.6rem 0.9rem;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            margin-bottom: 0.85rem;
+            box-shadow: var(--shadow-sm);
+            flex-wrap: wrap;
+            align-items: center;
+        }
+        .progress-chip {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            padding: 0.3rem 0.7rem;
+            border-radius: 9999px;
+            font-size: 0.78rem;
+            font-weight: 600;
+            background: var(--surface-alt);
+            color: var(--text-secondary);
+            border: 1px solid var(--border);
+        }
+        .progress-chip i { font-size: 0.75rem; }
+        .progress-chip .pc-num { font-variant-numeric: tabular-nums; font-weight: 700; color: var(--text-primary); }
+        .progress-chip.flag-chip { background: #fee2e2; color: #991b1b; border-color: #fecaca; }
+        .progress-chip.flag-chip .pc-num { color: #991b1b; }
+        :root[data-theme="dark"] .progress-chip.flag-chip { background: rgba(127, 29, 29, 0.4); color: #fca5a5; border-color: rgba(239, 68, 68, 0.3); }
+        :root[data-theme="dark"] .progress-chip.flag-chip .pc-num { color: #fca5a5; }
+        .progress-chip.notes-chip { background: #fef3c7; color: #92400e; border-color: #fde68a; }
+        .progress-chip.notes-chip .pc-num { color: #92400e; }
+        :root[data-theme="dark"] .progress-chip.notes-chip { background: rgba(146, 64, 14, 0.3); color: #fcd34d; border-color: rgba(245, 158, 11, 0.3); }
+        :root[data-theme="dark"] .progress-chip.notes-chip .pc-num { color: #fcd34d; }
+
+        .progress-actions {
+            margin-left: auto;
+            display: flex;
+            gap: 0.35rem;
+            flex-wrap: wrap;
+        }
+        .pa-btn {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            color: var(--text-secondary);
+            padding: 0.3rem 0.65rem;
+            border-radius: var(--radius-sm);
+            font-size: 0.75rem;
+            font-weight: 600;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.3rem;
+            transition: all 0.15s ease;
+            font-family: inherit;
+        }
+        .pa-btn:hover { border-color: var(--primary-light); color: var(--primary); }
+        .pa-btn.danger:hover { border-color: var(--error); color: var(--error); }
+        .pa-btn.success:hover { border-color: var(--success); color: var(--success); }
+
+        /* ===================== HEADER FLAG BADGE ===================== */
+        .flag-count-badge {
+            background: var(--error);
+            color: white;
+            font-size: 0.68rem;
+            font-weight: 700;
+            min-width: 18px;
+            height: 18px;
+            border-radius: 9px;
+            padding: 0 5px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            margin-left: -2px;
+            margin-top: -8px;
+            vertical-align: top;
+            font-variant-numeric: tabular-nums;
+        }
+        .flag-count-badge.zero { display: none; }
+
+        /* ===================== PDF PANEL ===================== */
+        .pdf-panel {
+            width: 0;
+            flex: 0 0 0;
+            background: var(--surface);
+            border-left: 1px solid transparent;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            transition: width 0.28s cubic-bezier(0.4, 0, 0.2, 1),
+                        flex-basis 0.28s cubic-bezier(0.4, 0, 0.2, 1),
+                        opacity 0.2s ease;
+            opacity: 0;
+            pointer-events: none;
+            min-width: 0;
+        }
+        .app-body.pdf-open .pdf-panel {
+            width: 45%;
+            flex: 0 0 45%;
+            opacity: 1;
+            pointer-events: auto;
+            border-left-color: var(--border);
+        }
+        /* If both editor & PDF are open, give PDF 40% to keep things readable */
+        .app-body.editor-open.pdf-open .pdf-panel {
+            flex: 0 0 38%;
+            width: 38%;
+        }
+
+        .pdf-toolbar {
+            padding: 0.55rem 0.8rem;
+            background: var(--surface);
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            gap: 0.4rem;
+            align-items: center;
+            flex-wrap: wrap;
+            min-height: 44px;
+        }
+        .pdf-page-info {
+            font-size: 0.78rem;
+            color: var(--text-secondary);
+            font-weight: 600;
+            font-variant-numeric: tabular-nums;
+            margin: 0 0.4rem;
+        }
+        .pdf-icon-btn {
+            background: var(--surface-alt);
+            border: 1px solid var(--border);
+            color: var(--text-secondary);
+            width: 30px;
+            height: 30px;
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.78rem;
+            transition: all 0.15s ease;
+            padding: 0;
+        }
+        .pdf-icon-btn:hover:not(:disabled) { border-color: var(--primary-light); color: var(--primary); }
+        .pdf-icon-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+        .pdf-zoom-info { font-size: 0.75rem; color: var(--text-tertiary); min-width: 38px; text-align: center; font-variant-numeric: tabular-nums; }
+        .pdf-name {
+            font-size: 0.78rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-left: auto;
+            max-width: 200px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .pdf-viewer-container {
+            flex: 1;
+            overflow: auto;
+            background: #525659;
+            padding: 1rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 1rem;
+            min-height: 0;
+        }
+        .pdf-viewer-container canvas {
+            box-shadow: 0 4px 20px -4px rgba(0, 0, 0, 0.5);
+            background: white;
+            max-width: 100%;
+        }
+        .pdf-empty {
+            color: rgba(255,255,255,0.7);
+            text-align: center;
+            margin: auto;
+            padding: 2rem;
+        }
+        .pdf-empty i { font-size: 3rem; margin-bottom: 1rem; opacity: 0.5; }
+        .pdf-empty h3 { font-size: 1.1rem; font-weight: 700; margin-bottom: 0.5rem; color: white; }
+        .pdf-empty p { font-size: 0.85rem; max-width: 280px; margin: 0 auto 1.25rem; line-height: 1.6; }
+        .pdf-empty .btn { margin: 0 auto; }
+
+        /* ===================== MODAL ===================== */
+        .modal-backdrop {
+            position: fixed;
+            inset: 0;
+            background: rgba(15, 23, 42, 0.55);
+            backdrop-filter: blur(3px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 100;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.2s ease;
+            padding: 1rem;
+        }
+        .modal-backdrop.open { opacity: 1; pointer-events: auto; }
+        .modal {
+            background: var(--surface);
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-lg);
+            max-width: 560px;
+            width: 100%;
+            max-height: 85vh;
+            overflow: auto;
+            transform: scale(0.95);
+            transition: transform 0.2s ease;
+        }
+        .modal-backdrop.open .modal { transform: scale(1); }
+        .modal-header {
+            padding: 1.1rem 1.25rem;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .modal-header h3 { font-size: 1.1rem; font-weight: 700; display: flex; align-items: center; gap: 0.5rem; }
+        .modal-header h3 i { color: var(--primary); }
+        .modal-close {
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: var(--text-tertiary);
+            font-size: 1.2rem;
+            padding: 0.25rem 0.5rem;
+            border-radius: var(--radius-sm);
+            transition: all 0.15s ease;
+        }
+        .modal-close:hover { background: var(--surface-alt); color: var(--text-primary); }
+        .modal-body { padding: 1.25rem; }
+        .modal-body h4 { font-size: 0.85rem; font-weight: 700; color: var(--text-primary); margin: 1rem 0 0.5rem; text-transform: uppercase; letter-spacing: 0.04em; }
+        .modal-body h4:first-child { margin-top: 0; }
+        .modal-body ul { list-style: none; padding: 0; }
+        .modal-body li {
+            padding: 0.55rem 0;
+            border-bottom: 1px solid var(--border-light);
+            display: flex;
+            align-items: center;
+            gap: 0.65rem;
+            font-size: 0.88rem;
+            color: var(--text-secondary);
+        }
+        .modal-body li:last-child { border-bottom: 0; }
+        .kbd {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 24px;
+            padding: 0.15rem 0.4rem;
+            background: var(--surface-alt);
+            border: 1px solid var(--border);
+            border-bottom-width: 2px;
+            border-radius: 4px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.72rem;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        /* ===================== FONT SIZE CONTROL ===================== */
+        .preview-panel { --preview-scale: 1; }
+        .preview-panel .question-text,
+        .preview-panel .option-text,
+        .preview-panel .explanation-content,
+        .preview-panel .answer-value {
+            font-size: calc(var(--font-base, 0.95rem) * var(--preview-scale));
+        }
+        .preview-panel .option-text { --font-base: 0.92rem; }
+        .preview-panel .explanation-content { --font-base: 0.92rem; }
+        .preview-panel .answer-value { --font-base: 0.92rem; }
+        .preview-panel .katex { font-size: calc(1.05em * var(--preview-scale)) !important; }
+
+        /* ===================== PDF + EDITOR + MOBILE TWEAKS ===================== */
+        @media (max-width: 768px) {
+            /* On mobile, PDF panel becomes a full-screen overlay */
+            .pdf-panel {
+                position: fixed;
+                inset: 0;
+                top: var(--header-h);
+                width: 100% !important;
+                flex: 0 0 auto !important;
+                border-left: 0;
+                border-top: 1px solid var(--border);
+                z-index: 22;
+                transform: translateY(100%);
+                opacity: 1;
+                transition: transform 0.32s cubic-bezier(0.32, 0.72, 0, 1);
+            }
+            .app-body.pdf-open .pdf-panel { transform: translateY(0); }
+            .pdf-name { max-width: 120px; }
+            .progress-bar { padding: 0.5rem 0.65rem; gap: 0.35rem; }
+            .progress-chip { font-size: 0.72rem; padding: 0.25rem 0.55rem; }
+            .progress-actions { width: 100%; justify-content: flex-start; }
+        }
+
+        /* Highlight flagged questions briefly when jumped to */
+        @keyframes flash-highlight {
+            0% { box-shadow: 0 0 0 4px rgba(239, 68, 68, 0.4); }
+            100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
+        }
+        .question-card.flash { animation: flash-highlight 1.2s ease-out; }
+    
     </style>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+    <script>
+        // Configure PDF.js worker
+        if (window['pdfjsLib']) {
+            pdfjsLib.GlobalWorkerOptions.workerSrc =
+                'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+        }
+
+        // ============================================================
+        //  FLAGGING + NOTES (localStorage persistence)
+        // ============================================================
+        const FLAGS_KEY  = 'neet.flags.v1';
+        const NOTES_KEY  = 'neet.notes.v1';
+        const THEME_KEY  = 'neet.theme.v1';
+        const FONT_KEY   = 'neet.preview.fontScale.v1';
+
+        function _readSet(key) {
+            try { return new Set(JSON.parse(localStorage.getItem(key) || '[]')); }
+            catch { return new Set(); }
+        }
+        function _writeSet(key, set) {
+            try { localStorage.setItem(key, JSON.stringify([...set])); } catch {}
+        }
+        function _readMap(key) {
+            try { return new Map(JSON.parse(localStorage.getItem(key) || '[]')); }
+            catch { return new Map(); }
+        }
+        function _writeMap(key, map) {
+            try { localStorage.setItem(key, JSON.stringify([...map.entries()])); } catch {}
+        }
+
+        let _flags = _readSet(FLAGS_KEY);
+        let _notes = _readMap(NOTES_KEY);
+
+        // Stable key — subject + id + globalQId (so duplicate ids across subjects don't collide)
+        function buildCardKey(question) {
+            const subj = (question.subjectKey || question.subject || 'general').toString().toLowerCase();
+            const id = question.id !== undefined ? String(question.id) : 'noid';
+            const gid = (question.globalQId || '').toString();
+            return `${subj}:${id}${gid ? ':' + gid : ''}`;
+        }
+
+        function isFlagged(cardKey) { return _flags.has(cardKey); }
+        function getNote(cardKey)   { return _notes.get(cardKey) || ''; }
+
+        function toggleFlag(btn) {
+            const card = btn.closest('.question-card');
+            if (!card) return;
+            const key = card.dataset.cardKey;
+            if (_flags.has(key)) {
+                _flags.delete(key);
+                card.classList.remove('flagged');
+                btn.classList.remove('flagged');
+            } else {
+                _flags.add(key);
+                card.classList.add('flagged');
+                btn.classList.add('flagged');
+                card.classList.remove('flash');
+                void card.offsetWidth; // restart animation
+                card.classList.add('flash');
+            }
+            _writeSet(FLAGS_KEY, _flags);
+            refreshProgressCounts();
+        }
+
+        function toggleNotes(btn) {
+            const card = btn.closest('.question-card');
+            if (!card) return;
+            const popup = card.querySelector('.notes-popup');
+            if (!popup) return;
+            popup.classList.toggle('open');
+            if (popup.classList.contains('open')) {
+                const ta = popup.querySelector('textarea');
+                if (ta) setTimeout(() => ta.focus(), 50);
+            }
+        }
+
+        function saveNote(textarea) {
+            const popup = textarea.closest('.notes-popup');
+            const key = popup?.dataset.notesFor;
+            if (!key) return;
+            const val = textarea.value;
+            _notes.set(key, val);
+            _writeMap(NOTES_KEY, _notes);
+            // Toggle the has-notes class on the button
+            const card = popup.closest('.question-card');
+            const noteBtn = card?.querySelector('.note-btn');
+            if (noteBtn) noteBtn.classList.toggle('has-notes', !!(val && val.trim()));
+            refreshProgressCounts();
+        }
+
+        function clearNote(btn) {
+            const popup = btn.closest('.notes-popup');
+            const key = popup?.dataset.notesFor;
+            if (!key) return;
+            _notes.delete(key);
+            _writeMap(NOTES_KEY, _notes);
+            const ta = popup.querySelector('textarea');
+            if (ta) ta.value = '';
+            const card = popup.closest('.question-card');
+            const noteBtn = card?.querySelector('.note-btn');
+            if (noteBtn) noteBtn.classList.remove('has-notes');
+            refreshProgressCounts();
+        }
+
+        function countFlagged() { return _flags.size; }
+        function countNotes() {
+            let n = 0;
+            for (const v of _notes.values()) if (v && v.trim()) n++;
+            return n;
+        }
+
+        function refreshProgressCounts() {
+            const fNum = countFlagged();
+            const nNum = countNotes();
+            const setText = (id, v) => { const el = document.getElementById(id); if (el) el.textContent = v; };
+            setText('flagProgressNum', fNum);
+            setText('notesProgressNum', nNum);
+            setText('flaggedTabCount', fNum);
+            setText('notesTabCount', nNum);
+            const badge = document.getElementById('flagCountBadge');
+            if (badge) {
+                badge.textContent = fNum;
+                badge.classList.toggle('zero', fNum === 0);
+            }
+        }
+
+        function clearAllFlags() {
+            if (_flags.size === 0) return;
+            if (!confirm(`Clear all ${_flags.size} flagged question(s)? This cannot be undone.`)) return;
+            _flags.clear();
+            _writeSet(FLAGS_KEY, _flags);
+            // Update UI
+            document.querySelectorAll('.question-card.flagged').forEach(c => c.classList.remove('flagged'));
+            document.querySelectorAll('.flag-btn.flagged').forEach(b => b.classList.remove('flagged'));
+            refreshProgressCounts();
+            if (currentFilter === '__flagged__') applyFilter();
+        }
+
+        // Export flagged questions (with their notes) as a downloadable JSON file
+        function exportFlagged() {
+            const flaggedKeys = new Set(_flags);
+            const notesMap = _notes;
+            if (flaggedKeys.size === 0) {
+                alert('No questions are flagged yet. Flag some questions first.');
+                return;
+            }
+            const result = { _meta: {
+                exportedAt: new Date().toISOString(),
+                totalFlagged: flaggedKeys.size,
+                source: 'NEET KaTeX Viewer',
+            }, subjects: {} };
+            const data = lastRenderedData;
+            if (!data) { alert('No data loaded.'); return; }
+
+            // Walk lastRenderedData
+            const subjectKeys = Object.keys(data).filter(k =>
+                SUBJECTS[k.toLowerCase()] && data[k] && data[k].questions
+            );
+            const usingArray = !subjectKeys.length && (data.questions || Array.isArray(data));
+            const iter = usingArray
+                ? [['General', Array.isArray(data) ? data : data.questions]]
+                : subjectKeys.map(k => [k, data[k].questions || []]);
+
+            let exported = 0;
+            iter.forEach(([subjKey, questions]) => {
+                const cfg = SUBJECTS[subjKey.toLowerCase()] || { name: subjKey };
+                const bucket = [];
+                questions.forEach(q => {
+                    const qWithSubj = Object.assign({}, q, { subject: cfg.name, subjectKey: subjKey });
+                    const key = buildCardKey(qWithSubj);
+                    if (flaggedKeys.has(key)) {
+                        const clone = Object.assign({}, q);
+                        clone._note = notesMap.get(key) || '';
+                        clone._flagged = true;
+                        bucket.push(clone);
+                        exported++;
+                    }
+                });
+                if (bucket.length) result.subjects[subjKey] = { name: cfg.name, questions: bucket };
+            });
+            result._meta.exported = exported;
+
+            const blob = new Blob([JSON.stringify(result, null, 2)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            const ts = new Date().toISOString().replace(/[:.]/g, '-').slice(0, 19);
+            a.href = url;
+            a.download = `flagged-questions-${ts}.json`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            setTimeout(() => URL.revokeObjectURL(url), 1000);
+            updateViewerStatus(`Exported ${exported} flagged question(s)`, 'success');
+        }
+
+        // ============================================================
+        //  CARD COLLAPSE
+        // ============================================================
+        function toggleCollapseCard(btn) {
+            const card = btn.closest('.question-card');
+            if (card) card.classList.toggle('collapsed');
+        }
+        function collapseAll(collapse) {
+            document.querySelectorAll('.question-card').forEach(c => c.classList.toggle('collapsed', collapse));
+        }
+
+        // ============================================================
+        //  DARK MODE
+        // ============================================================
+        function initTheme() {
+            const saved = localStorage.getItem(THEME_KEY) || 'light';
+            applyTheme(saved);
+        }
+        function applyTheme(theme) {
+            document.documentElement.setAttribute('data-theme', theme);
+            const icon = document.getElementById('themeIcon');
+            if (icon) icon.className = theme === 'dark' ? 'fas fa-sun' : 'fas fa-moon';
+        }
+        function toggleTheme() {
+            const next = document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+            localStorage.setItem(THEME_KEY, next);
+            applyTheme(next);
+        }
+
+        // ============================================================
+        //  PREVIEW FONT SIZE
+        // ============================================================
+        function adjustPreviewFont(delta) {
+            const panel = document.querySelector('.preview-panel');
+            if (!panel) return;
+            const cur = parseFloat(getComputedStyle(panel).getPropertyValue('--preview-scale')) || 1;
+            const next = Math.min(1.6, Math.max(0.7, +(cur + delta).toFixed(2)));
+            panel.style.setProperty('--preview-scale', next);
+            try { localStorage.setItem(FONT_KEY, String(next)); } catch {}
+        }
+        function restorePreviewFont() {
+            const saved = parseFloat(localStorage.getItem(FONT_KEY));
+            if (saved && !isNaN(saved)) {
+                document.querySelector('.preview-panel')?.style.setProperty('--preview-scale', saved);
+            }
+        }
+        document.addEventListener('DOMContentLoaded', restorePreviewFont);
+
+        // ============================================================
+        //  PDF VIEWER (PDF.js)
+        // ============================================================
+        let pdfDoc = null;
+        let pdfPageNum = 1;
+        let pdfScale = 1.0;
+        let pdfRenderTask = null;
+
+        function togglePdf(force) {
+            const body = document.getElementById('appBody');
+            const btn  = document.getElementById('togglePdfBtn');
+            const panel = document.getElementById('pdfPanel');
+            const isOpen = body.classList.contains('pdf-open');
+            const next = (typeof force === 'boolean') ? force : !isOpen;
+            if (next) {
+                body.classList.add('pdf-open');
+                btn.classList.add('is-open');
+                btn.setAttribute('aria-expanded', 'true');
+                panel.setAttribute('aria-hidden', 'false');
+                // Auto-collapse editor on mobile to give PDF room
+                if (window.innerWidth <= 768) toggleEditor(false);
+            } else {
+                body.classList.remove('pdf-open');
+                btn.classList.remove('is-open');
+                btn.setAttribute('aria-expanded', 'false');
+                panel.setAttribute('aria-hidden', 'true');
+            }
+        }
+
+        function setupPdfUpload() {
+            const input = document.getElementById('pdfFileInput');
+            if (!input) return;
+            input.addEventListener('change', function(e) {
+                const file = e.target.files[0];
+                if (!file) return;
+                loadPdfFromFile(file);
+            });
+        }
+
+        async function loadPdfFromFile(file) {
+            if (!window['pdfjsLib']) {
+                alert('PDF.js library failed to load. Check your internet connection.');
+                return;
+            }
+            const url = URL.createObjectURL(file);
+            try {
+                // Show loading state
+                document.getElementById('pdfEmpty').innerHTML =
+                    '<i class="fas fa-spinner fa-spin"></i><h3>Loading PDF…</h3>';
+                document.getElementById('pdfCanvas').style.display = 'none';
+
+                const task = pdfjsLib.getDocument(url);
+                pdfDoc = await task.promise;
+                pdfPageNum = 1;
+                pdfScale = 1.0;
+
+                document.getElementById('pdfTotalPages').textContent = pdfDoc.numPages;
+                document.getElementById('pdfName').textContent = file.name;
+                document.getElementById('pdfEmpty').style.display = 'none';
+                document.getElementById('pdfCanvas').style.display = 'block';
+
+                // Enable controls
+                ['pdfPrevBtn','pdfNextBtn','pdfZoomInBtn','pdfZoomOutBtn','pdfFitBtn'].forEach(id => {
+                    document.getElementById(id).disabled = false;
+                });
+
+                await renderPdfPage();
+                togglePdf(true);  // ensure panel is open
+            } catch (err) {
+                console.error('PDF load error:', err);
+                document.getElementById('pdfEmpty').style.display = 'block';
+                document.getElementById('pdfEmpty').innerHTML =
+                    '<i class="fas fa-exclamation-triangle" style="color:#fbbf24;"></i>' +
+                    '<h3>Could not open PDF</h3>' +
+                    '<p>' + (err.message || 'Unknown error') + '</p>';
+                document.getElementById('pdfCanvas').style.display = 'none';
+            } finally {
+                // We can release the object URL after PDF.js has loaded it
+                setTimeout(() => URL.revokeObjectURL(url), 10000);
+            }
+        }
+
+        async function renderPdfPage() {
+            if (!pdfDoc) return;
+            // Cancel any in-flight render
+            if (pdfRenderTask) { try { pdfRenderTask.cancel(); } catch {} }
+            const page = await pdfDoc.getPage(pdfPageNum);
+            const canvas = document.getElementById('pdfCanvas');
+            const ctx = canvas.getContext('2d');
+
+            // Compute scale to fit container width, but never exceed requested zoom
+            const container = document.getElementById('pdfViewerContainer');
+            const availW = Math.max(200, container.clientWidth - 32);
+            const viewport0 = page.getViewport({ scale: 1 });
+            const fitScale = availW / viewport0.width;
+            const effectiveScale = Math.max(0.2, fitScale * pdfScale);
+
+            const viewport = page.getViewport({ scale: effectiveScale });
+            canvas.width = viewport.width;
+            canvas.height = viewport.height;
+            canvas.style.width = '';
+            canvas.style.height = '';
+
+            try {
+                pdfRenderTask = page.render({ canvasContext: ctx, viewport });
+                await pdfRenderTask.promise;
+            } catch (err) {
+                if (err && err.name !== 'RenderingCancelledException') console.warn(err);
+            }
+
+            document.getElementById('pdfCurPage').textContent = pdfPageNum;
+            document.getElementById('pdfZoomInfo').textContent = Math.round(pdfScale * 100) + '%';
+            document.getElementById('pdfPrevBtn').disabled = pdfPageNum <= 1;
+            document.getElementById('pdfNextBtn').disabled = pdfPageNum >= pdfDoc.numPages;
+        }
+
+        function pdfPrev() {
+            if (!pdfDoc || pdfPageNum <= 1) return;
+            pdfPageNum--;
+            renderPdfPage();
+        }
+        function pdfNext() {
+            if (!pdfDoc || pdfPageNum >= pdfDoc.numPages) return;
+            pdfPageNum++;
+            renderPdfPage();
+        }
+        function pdfZoom(delta) {
+            if (!pdfDoc) return;
+            pdfScale = Math.min(3, Math.max(0.3, +(pdfScale + delta).toFixed(2)));
+            renderPdfPage();
+        }
+        function pdfFit() {
+            if (!pdfDoc) return;
+            pdfScale = 1.0;
+            renderPdfPage();
+        }
+
+        // ============================================================
+        //  HELP MODAL
+        // ============================================================
+        function openHelpModal()  { document.getElementById('helpModal').classList.add('open'); }
+        function closeHelpModal() { document.getElementById('helpModal').classList.remove('open'); }
+
+        // ============================================================
+        //  KEYBOARD SHORTCUTS
+        //  (ignored when focus is in a text input / textarea)
+        // ============================================================
+        function setupKeyboardShortcuts() {
+            document.addEventListener('keydown', function(e) {
+                // Escape closes modal / panels
+                if (e.key === 'Escape') {
+                    if (document.getElementById('helpModal').classList.contains('open')) {
+                        closeHelpModal(); return;
+                    }
+                    if (document.getElementById('appBody').classList.contains('pdf-open')) { togglePdf(false); return; }
+                    // Otherwise let backdrop / mobile sheet handle escape
+                }
+
+                // Don't trigger shortcuts while typing
+                const tag = (e.target.tagName || '').toLowerCase();
+                if (tag === 'input' || tag === 'textarea' || e.target.isContentEditable) {
+                    // Allow Escape inside search to blur it
+                    if (e.key === 'Escape' && tag === 'input') e.target.blur();
+                    return;
+                }
+                // Skip modifier combos
+                if (e.ctrlKey || e.metaKey || e.altKey) return;
+
+                const key = e.key.toLowerCase();
+                switch (key) {
+                    case 'e': e.preventDefault(); toggleEditor(); break;
+                    case 'p': e.preventDefault(); togglePdf(); break;
+                    case 'd': e.preventDefault(); toggleTheme(); break;
+                    case '?': e.preventDefault(); openHelpModal(); break;
+                    case '/': {
+                        e.preventDefault();
+                        const s = document.getElementById('questionSearch');
+                        if (s) { s.focus(); s.select(); }
+                        break;
+                    }
+                    case '[': e.preventDefault(); collapseAll(true); break;
+                    case ']': e.preventDefault(); collapseAll(false); break;
+                    case 'x': e.preventDefault(); exportFlagged(); break;
+                    case '+': case '=':
+                        if (pdfDoc) { e.preventDefault(); pdfZoom(0.1); }
+                        else { e.preventDefault(); adjustPreviewFont(0.1); }
+                        break;
+                    case '-': case '_':
+                        if (pdfDoc) { e.preventDefault(); pdfZoom(-0.1); }
+                        else { e.preventDefault(); adjustPreviewFont(-0.1); }
+                        break;
+                    case 'arrowleft':
+                        if (pdfDoc && document.getElementById('appBody').classList.contains('pdf-open')) {
+                            e.preventDefault(); pdfPrev();
+                        }
+                        break;
+                    case 'arrowright':
+                        if (pdfDoc && document.getElementById('appBody').classList.contains('pdf-open')) {
+                            e.preventDefault(); pdfNext();
+                        }
+                        break;
+                    case 'f':
+                    case 'n':
+                    case 'c': {
+                        // Operate on the question card currently under the mouse
+                        const card = document.elementFromPoint(window.lastMouseX || 0, window.lastMouseY || 0)?.closest('.question-card');
+                        if (!card) return;
+                        e.preventDefault();
+                        if (key === 'f')      card.querySelector('.flag-btn')?.click();
+                        else if (key === 'n') card.querySelector('.note-btn')?.click();
+                        else if (key === 'c') card.querySelector('.collapse-btn')?.click();
+                        break;
+                    }
+                }
+            });
+
+            // Track mouse position for "hovered card" actions (read via window.lastMouseX/Y)
+            document.addEventListener('mousemove', function(e) {
+                window.lastMouseX = e.clientX;
+                window.lastMouseY = e.clientY;
+            });
+        }
+        
+    </script>
+
 </head>
 <body>
     <header class="app-header">
@@ -1007,10 +1941,33 @@
                 <span>Render</span>
             </button>
             <span class="ctrl-divider"></span>
+            <button class="btn btn-toggle" id="togglePdfBtn" type="button"
+                    onclick="togglePdf()" aria-label="Toggle PDF viewer" aria-expanded="false">
+                <i class="fas fa-file-pdf" id="togglePdfIcon"></i>
+                <span class="toggle-label" style="display:none;">PDF</span>
+            </button>
+            <button class="btn btn-toggle" id="themeToggleBtn" type="button"
+                    onclick="toggleTheme()" aria-label="Toggle dark mode">
+                <i class="fas fa-moon" id="themeIcon"></i>
+            </button>
+            <button class="btn btn-toggle" id="fontIncBtn" type="button"
+                    onclick="adjustPreviewFont(0.1)" aria-label="Increase font size">
+                <i class="fas fa-text-height"></i><i class="fas fa-plus" style="font-size:0.6rem;margin-left:-0.25rem;"></i>
+            </button>
+            <button class="btn btn-toggle" id="fontDecBtn" type="button"
+                    onclick="adjustPreviewFont(-0.1)" aria-label="Decrease font size">
+                <i class="fas fa-text-height"></i><i class="fas fa-minus" style="font-size:0.6rem;margin-left:-0.25rem;"></i>
+            </button>
+            <button class="btn btn-toggle" id="helpBtn" type="button"
+                    onclick="openHelpModal()" aria-label="Keyboard shortcuts">
+                <i class="fas fa-keyboard"></i>
+            </button>
+            <span class="ctrl-divider"></span>
             <button class="btn btn-toggle is-open" id="toggleEditorBtn" type="button"
                     onclick="toggleEditor()" aria-label="Toggle JSON editor" aria-expanded="true">
                 <i class="fas fa-code" id="toggleEditorIcon"></i>
                 <span class="toggle-label" style="display:none;">Editor</span>
+                <span class="flag-count-badge zero" id="flagCountBadge" title="Flagged questions">0</span>
             </button>
         </div>
     </header>
@@ -1078,6 +2035,47 @@ Each question may include:
                 </div>
             </div>
         </section>
+
+        <section class="pdf-panel" id="pdfPanel" aria-hidden="true">
+            <div class="pdf-toolbar">
+                <button class="pdf-icon-btn" id="pdfPrevBtn" onclick="pdfPrev()" disabled title="Previous page (←)">
+                    <i class="fas fa-chevron-up"></i>
+                </button>
+                <span class="pdf-page-info">
+                    Page <span id="pdfCurPage">0</span> / <span id="pdfTotalPages">0</span>
+                </span>
+                <button class="pdf-icon-btn" id="pdfNextBtn" onclick="pdfNext()" disabled title="Next page (→)">
+                    <i class="fas fa-chevron-down"></i>
+                </button>
+                <span class="ctrl-divider" style="height:20px;"></span>
+                <button class="pdf-icon-btn" id="pdfZoomOutBtn" onclick="pdfZoom(-0.1)" disabled title="Zoom out (-)">
+                    <i class="fas fa-search-minus"></i>
+                </button>
+                <span class="pdf-zoom-info" id="pdfZoomInfo">100%</span>
+                <button class="pdf-icon-btn" id="pdfZoomInBtn" onclick="pdfZoom(0.1)" disabled title="Zoom in (+)">
+                    <i class="fas fa-search-plus"></i>
+                </button>
+                <button class="pdf-icon-btn" id="pdfFitBtn" onclick="pdfFit()" disabled title="Fit width">
+                    <i class="fas fa-arrows-alt-h"></i>
+                </button>
+                <span class="pdf-name" id="pdfName">No PDF loaded</span>
+            </div>
+            <div class="pdf-viewer-container" id="pdfViewerContainer">
+                <div class="pdf-empty" id="pdfEmpty">
+                    <i class="fas fa-file-pdf"></i>
+                    <h3>Open a PDF</h3>
+                    <p>Load a question paper PDF to compare side-by-side with the KaTeX rendering.</p>
+                    <div class="file-input-wrapper" style="display:inline-block;">
+                        <button class="btn btn-primary" type="button">
+                            <i class="fas fa-folder-open"></i>
+                            <span>Open PDF</span>
+                        </button>
+                        <input type="file" id="pdfFileInput" accept=".pdf,application/pdf">
+                    </div>
+                </div>
+                <canvas id="pdfCanvas" style="display:none;"></canvas>
+            </div>
+        </section>
     </main>
 
     <!-- Floating button to re-open editor (mobile only) -->
@@ -1085,6 +2083,51 @@ Each question may include:
             aria-label="Open JSON editor">
         <i class="fas fa-code"></i>
     </button>
+
+
+    <!-- Help / shortcuts modal -->
+    <div class="modal-backdrop" id="helpModal" onclick="if(event.target===this)closeHelpModal()">
+        <div class="modal" role="dialog" aria-labelledby="helpModalTitle">
+            <div class="modal-header">
+                <h3 id="helpModalTitle"><i class="fas fa-keyboard"></i> Keyboard Shortcuts & Tips</h3>
+                <button class="modal-close" onclick="closeHelpModal()" aria-label="Close"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="modal-body">
+                <h4>Navigation</h4>
+                <ul>
+                    <li><span class="kbd">E</span> Toggle JSON editor panel</li>
+                    <li><span class="kbd">P</span> Toggle PDF viewer panel</li>
+                    <li><span class="kbd">D</span> Toggle dark mode</li>
+                    <li><span class="kbd">/</span> Focus search box</li>
+                    <li><span class="kbd">?</span> Open this help</li>
+                    <li><span class="kbd">Esc</span> Close any modal / panel</li>
+                </ul>
+                <h4>Question Actions (hover a card)</h4>
+                <ul>
+                    <li><span class="kbd">F</span> Flag / unflag the hovered question</li>
+                    <li><span class="kbd">N</span> Open notes for the hovered question</li>
+                    <li><span class="kbd">C</span> Collapse / expand the hovered question</li>
+                </ul>
+                <h4>Bulk Actions</h4>
+                <ul>
+                    <li><span class="kbd">[</span> Collapse all questions</li>
+                    <li><span class="kbd">]</span> Expand all questions</li>
+                    <li><span class="kbd">X</span> Export flagged questions as JSON</li>
+                </ul>
+                <h4>PDF Viewer</h4>
+                <ul>
+                    <li><span class="kbd">←</span> / <span class="kbd">→</span> Previous / next page</li>
+                    <li><span class="kbd">+</span> / <span class="kbd">−</span> Zoom in / out</li>
+                </ul>
+                <h4>Tips</h4>
+                <ul>
+                    <li><i class="fas fa-flag" style="color:var(--error);"></i> Flagged questions and notes are saved in your browser (localStorage) — they persist across reloads.</li>
+                    <li><i class="fas fa-download" style="color:var(--primary);"></i> Use <strong>Export Flagged</strong> to download a JSON file of every flagged question with its notes — perfect for tracking corrections.</li>
+                    <li><i class="fas fa-arrows-alt-h" style="color:var(--primary);"></i> Drag the divider between editor and preview to resize them.</li>
+                </ul>
+            </div>
+        </div>
+    </div>
 
     <!-- Backdrop for mobile editor sheet -->
     <div class="editor-backdrop" id="editorBackdrop" onclick="toggleEditor(false)"></div>
@@ -1140,10 +2183,13 @@ Each question may include:
         let lastRenderedData = null;
 
         document.addEventListener('DOMContentLoaded', function() {
+            initTheme();
             loadSampleData();
             setupResize();
             setupFileUpload();
             setupImageBasePersister();
+            setupPdfUpload();
+            setupKeyboardShortcuts();
 
             let debounceTimer;
             document.getElementById('jsonEditor').addEventListener('input', function() {
@@ -1282,6 +2328,8 @@ Each question may include:
             filterBar.className = 'subject-filter-bar';
 
             const totalCount = subjectKeys.reduce((sum, k) => sum + (data[k].questions || []).length, 0);
+            const flaggedCount = countFlagged();
+            const notesCount = countNotes();
             filterBar.innerHTML = `
                 <div class="subject-tab active" data-filter="all">
                     <i class="fas fa-layer-group"></i> All <span class="count">${totalCount}</span>
@@ -1297,10 +2345,36 @@ Each question may include:
                 `;
             });
             filterBar.innerHTML += `
+                <div class="subject-tab" data-filter="__flagged__" style="color: var(--error); border-color: #fecaca;">
+                    <i class="fas fa-flag"></i> Flagged <span class="count" id="flaggedTabCount">${flaggedCount}</span>
+                </div>
+                <div class="subject-tab" data-filter="__notes__" style="color: #92400e; border-color: #fde68a;">
+                    <i class="fas fa-comment-dots"></i> Notes <span class="count" id="notesTabCount">${notesCount}</span>
+                </div>
                 <input type="text" class="search-input" id="questionSearch"
                        placeholder="Search question text / ID / topic..." />
             `;
             viewer.appendChild(filterBar);
+
+            // Progress + bulk actions bar
+            const progressBar = document.createElement('div');
+            progressBar.className = 'progress-bar';
+            progressBar.innerHTML = `
+                <span class="progress-chip"><i class="fas fa-list-ol"></i> Total <span class="pc-num">${totalCount}</span></span>
+                <span class="progress-chip flag-chip" id="flagProgressChip">
+                    <i class="fas fa-flag"></i> Flagged <span class="pc-num" id="flagProgressNum">${flaggedCount}</span>
+                </span>
+                <span class="progress-chip notes-chip" id="notesProgressChip">
+                    <i class="fas fa-comment-dots"></i> With notes <span class="pc-num" id="notesProgressNum">${notesCount}</span>
+                </span>
+                <div class="progress-actions">
+                    <button class="pa-btn" onclick="collapseAll(true)" title="Collapse all (["><i class="fas fa-compress-arrows-alt"></i> Collapse all</button>
+                    <button class="pa-btn" onclick="collapseAll(false)" title="Expand all (])"><i class="fas fa-expand-arrows-alt"></i> Expand all</button>
+                    <button class="pa-btn success" onclick="exportFlagged()" title="Export flagged as JSON (X)"><i class="fas fa-download"></i> Export flagged</button>
+                    <button class="pa-btn danger" onclick="clearAllFlags()" title="Clear all flags"><i class="fas fa-trash-alt"></i> Clear flags</button>
+                </div>
+            `;
+            viewer.appendChild(progressBar);
 
             // Wire up filter tabs
             filterBar.querySelectorAll('.subject-tab').forEach(tab => {
@@ -1445,6 +2519,14 @@ Each question may include:
             const subjKey = (question.subjectKey || '').toLowerCase();
             const subjCfg = SUBJECTS[subjKey] || { name: question.subject || 'General', icon: 'fa-question-circle' };
 
+            // Build a unique stable key for persistence (subject + id + globalQId)
+            const cardKey = buildCardKey(question);
+            card.dataset.cardKey = cardKey;
+            // Apply persisted flag/note state immediately (prevents flash)
+            if (isFlagged(cardKey)) card.classList.add('flagged');
+            const savedNote = getNote(cardKey);
+            const hasNote = !!(savedNote && savedNote.trim());
+
             card.innerHTML = `
                 <div class="question-header">
                     <div class="question-meta">
@@ -1453,6 +2535,21 @@ Each question may include:
                             <span>Q${escapeHTML(String(question.id ?? ''))}</span>
                         </div>
                         ${metaChips.join('')}
+                    </div>
+                    <div class="question-actions">
+                        <button class="q-action-btn flag-btn ${isFlagged(cardKey) ? 'flagged' : ''}"
+                                onclick="toggleFlag(this)" title="Flag for correction (F)" aria-label="Flag">
+                            <i class="fas fa-flag"></i>
+                        </button>
+                        <button class="q-action-btn note-btn ${hasNote ? 'has-notes' : ''}"
+                                onclick="toggleNotes(this)" title="Add note (N)" aria-label="Notes">
+                            <i class="fas fa-comment-dots"></i>
+                        </button>
+                        <button class="q-action-btn collapse-btn"
+                                onclick="toggleCollapseCard(this)" title="Collapse / expand (C)" aria-label="Collapse">
+                            <i class="fas fa-chevron-down"></i>
+                            <i class="fas fa-chevron-up"></i>
+                        </button>
                     </div>
                 </div>
 
@@ -1466,6 +2563,15 @@ Each question may include:
 
                 ${correctAnswerHTML}
                 ${explanationHTML}
+
+                <div class="notes-popup" data-notes-for="${escapeHTML(cardKey)}">
+                    <div class="notes-meta">
+                        <span><i class="fas fa-comment-dots"></i> Correction note</span>
+                        <button class="notes-clear" onclick="clearNote(this)">Clear</button>
+                    </div>
+                    <textarea placeholder="What needs to be fixed? (saved automatically)"
+                              oninput="saveNote(this)">${escapeHTML(savedNote || '')}</textarea>
+                </div>
             `;
 
             return card;
@@ -1552,27 +2658,42 @@ Each question may include:
         // Apply subject filter + search term to all visible cards
         function applyFilter() {
             const search = (document.getElementById('questionSearch')?.value || '').toLowerCase().trim();
-            document.querySelectorAll('.subject-section').forEach(section => {
-                const subjMatch = currentFilter === 'all' || section.dataset.subject === currentFilter;
-                let visibleCount = 0;
-                section.querySelectorAll('.question-card').forEach(card => {
-                    let visible = subjMatch;
-                    if (visible && search) {
-                        const haystack = [
-                            card.dataset.id,
-                            card.dataset.topic,
-                            card.dataset.globalId,
-                            card.textContent || ''
-                        ].join(' ').toLowerCase();
-                        visible = haystack.includes(search);
-                    }
-                    card.classList.toggle('hidden', !visible);
-                    if (visible) visibleCount++;
+            const filterSubjectSections = (predicate) => {
+                document.querySelectorAll('.subject-section').forEach(section => {
+                    let visibleCount = 0;
+                    section.querySelectorAll('.question-card').forEach(card => {
+                        let visible = predicate(card, section);
+                        if (visible && search) {
+                            const haystack = [
+                                card.dataset.id,
+                                card.dataset.topic,
+                                card.dataset.globalId,
+                                card.textContent || ''
+                            ].join(' ').toLowerCase();
+                            visible = haystack.includes(search);
+                        }
+                        card.classList.toggle('hidden', !visible);
+                        if (visible) visibleCount++;
+                    });
+                    section.style.display = (visibleCount === 0) ? 'none' : '';
                 });
-                // Hide the entire subject section header if no questions are visible
-                section.style.display = (subjMatch && visibleCount === 0 && search) ? 'none' : '';
-                if (!subjMatch) section.style.display = 'none';
-            });
+            };
+
+            if (currentFilter === '__flagged__') {
+                filterSubjectSections((card) => card.classList.contains('flagged'));
+            } else if (currentFilter === '__notes__') {
+                filterSubjectSections((card) => {
+                    const key = card.dataset.cardKey;
+                    const note = getNote(key);
+                    return !!(note && note.trim());
+                });
+            } else {
+                filterSubjectSections((card, section) =>
+                    currentFilter === 'all' || section.dataset.subject === currentFilter
+                );
+            }
+            // Update progress counts after filtering
+            refreshProgressCounts();
         }
 
         // ---------- Image loading ----------
@@ -1625,6 +2746,8 @@ Each question may include:
                 const decodedText = textArea.value;
                 element.innerHTML = parseAndRenderLaTeX(decodedText);
             });
+            // After render, sync UI state with persisted flags / notes
+            refreshProgressCounts();
         }
 
         function parseAndRenderLaTeX(text) {
